@@ -22,8 +22,8 @@ namespace lab1
             {
                 { "+", "плюс" },
                 { "-", "минус"},
-                { "*", "умножить"},
-                { ":", "делить"}
+                { "*", "умножить на"},
+                { ":", "делить на"}
             };
 
             NUMBERS = new Dictionary<int, string>()
@@ -42,27 +42,38 @@ namespace lab1
         
         private void Generate(string fileName, int lineCount, int minOperandNumber, int maxOperandNumber)
         {
-            try
+
+            if (lineCount <= 0)
             {
-                StreamWriter file = new StreamWriter(fileName, false);
-                for (int i = 0; i < lineCount; i++)
-                {
-                    int operandNumber = this.GetRandomNumber(minOperandNumber, maxOperandNumber);
-                    string generatedString = this.GenerateArithmeticExpression(operandNumber);
-                    file.WriteLine(generatedString);
-                }
-                file.Close();
+                throw new ArgumentException("The number of generated lines must be positive");
             }
-            catch (Exception exception)
-            {
-                Console.WriteLine("ewjrfherl");
-            }
+
+            this.WriteDataToFile(this.GetArithmeticExpressionsList(lineCount, minOperandNumber, maxOperandNumber), fileName);
         }
 
-        private String GenerateArithmeticExpression(int operandNumber)
+        private List<string> GetArithmeticExpressionsList(int expressionsNumber, int minOperandNumber, int maxOperandNumber)
+        {
+            List<string> expressions = new List<string>();
+            try
+            {
+                for (int i = 0; i < expressionsNumber; i++)
+                {
+                    int operandNumber = this.GetRandomNumber(minOperandNumber, maxOperandNumber);
+                    string generatedExpression = this.GenerateArithmeticExpression(operandNumber);
+                    expressions.Add(generatedExpression);
+                }
+            } catch (Exception)
+            {
+                throw new Exception("Failed expressions generation");
+            }
+            
+            return expressions;
+        }
+
+        private string GenerateArithmeticExpression(int operandNumber)
         {
             int randomNumber = this.GetRandomNumber(this.MIN_VALUE, this.MAX_VALUE);
-            StringBuilder arithmeticExpression = new StringBuilder(randomNumber.ToString());           
+            StringBuilder arithmeticExpression = new StringBuilder(randomNumber.ToString());
 
             for (int i = 0; i < operandNumber; i++)
             {
@@ -78,8 +89,111 @@ namespace lab1
             return new Random().Next(minValue, maxValue + 1);
         }
 
+        private void WriteDataToFile(List<string> expressions, string fileName)
+        {
+            try
+            {
+                StreamWriter file = new StreamWriter(fileName, false);
+                foreach (string expression in expressions)
+                {
+                    file.WriteLine(expression);
+                }
+                file.Close();
+            } catch (Exception)
+            {
+                throw new Exception("Error writing to file!");
+            }
+            
+        }
+
         private void Translate(string inputFileName, string outputFileName) 
         {
+            this.WriteDataToFile(this.TranslateIntoVerbalView(this.ReadInputDataFromFile(inputFileName)), outputFileName);
+        }
+
+        private List<string> TranslateIntoVerbalView(List<string> arithmeticExpressions)
+        {
+            List<string> verbalExpressions = new List<string>();
+
+            foreach(string expression in arithmeticExpressions)
+            {
+                verbalExpressions.Add(TranslateExpressionToVerbalView(expression));
+            }
+
+            return verbalExpressions;
+        }
+
+        private string TranslateExpressionToVerbalView(string arithmeticExpression)
+        {
+            List<string> verbalElements = new List<string>();
+            try
+            {
+                string[] expressionElements = arithmeticExpression.Split(" ");
+                foreach (string element in expressionElements)
+                {
+                    if (OPERANDS.ContainsKey(element))
+                    {
+                        verbalElements.Add(OPERANDS[element]);
+                    }
+                    else if (NUMBERS.ContainsKey(int.Parse(element)))
+                    {
+                        verbalElements.Add(NUMBERS[int.Parse(element)]);
+                    }
+                }
+            } catch (Exception)
+            {
+                throw new Exception("Error translation arithmetic expression into verbal representation");
+            }
+            
+
+            return FormVerbalExpression(verbalElements);
+        }
+
+        private string FormVerbalExpression(List<string> elements)
+        {
+            StringBuilder verbalExpression = new StringBuilder();
+            foreach(string element in elements)
+            {
+                verbalExpression.Append($"{element} ");
+            }
+            return verbalExpression.ToString();
+        }
+
+        private List<String?> ReadInputDataFromFile(string inputFileName)
+        {
+            StreamReader inputFile = new StreamReader(inputFileName);
+            List<string> inputExpressions = new List<string>();
+            string expression = inputFile.ReadLine();
+            while (expression != null)
+            {
+                inputExpressions.Add(expression);
+                expression = inputFile.ReadLine();
+            };
+
+            inputFile.Close();
+            return inputExpressions;
+        }
+
+        private static void CheckGenerationArguments(string[] args)
+        {
+            if (args.Length != 5)
+            {
+                throw new Exception("There are exactly 5 arguments when generation expressions:\n" + 
+                    "output file name\n" + 
+                    "lines number\n" + 
+                    "minimum operands\n" +
+                    "maximum operands number");
+            }
+
+            try
+            {
+                int.Parse(args[2]);
+                int.Parse(args[3]);
+                int.Parse(args[4]);
+            } catch (Exception)
+            {
+                throw new ArgumentException("The values of the lines number, the minimum and maximum operands number must be numerical");
+            }
 
         }
         
@@ -88,6 +202,7 @@ namespace lab1
             switch (args[0].ToUpper())
             {
                 case "G":
+                    CheckGenerationArguments(args);
                     new Utility().Generate(args[1], int.Parse(args[2]),
                               int.Parse(args[3]),
                               int.Parse(args[4]));
