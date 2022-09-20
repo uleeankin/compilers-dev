@@ -1,11 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
-
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
+using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace lab1
 {
@@ -15,6 +11,7 @@ namespace lab1
         private readonly Dictionary<int, String> NUMBERS;
         private readonly int MIN_VALUE = 1;
         private readonly int MAX_VALUE = 9;
+        private static readonly string REGEX = "/.*.txt";
 
         public Utility()
         {
@@ -45,7 +42,8 @@ namespace lab1
 
             if (lineCount <= 0)
             {
-                throw new ArgumentException("The number of generated lines must be positive");
+                //throw new ArgumentException("The number of generated lines must be positive");
+                CompleteProgramExecution("The number of generated lines must be positive");
             }
 
             this.WriteDataToFile(this.GetArithmeticExpressionsList(lineCount, minOperandNumber, maxOperandNumber), fileName);
@@ -64,7 +62,8 @@ namespace lab1
                 }
             } catch (Exception)
             {
-                throw new Exception("Failed expressions generation");
+                //throw new Exception("Failed expressions generation");
+                CompleteProgramExecution("Failed expressions generation");
             }
             
             return expressions;
@@ -101,7 +100,8 @@ namespace lab1
                 file.Close();
             } catch (Exception)
             {
-                throw new Exception("Error writing to file!");
+                //throw new Exception("Error writing to file!");
+                CompleteProgramExecution("Error writing to file!");
             }
             
         }
@@ -117,7 +117,7 @@ namespace lab1
 
             foreach(string expression in arithmeticExpressions)
             {
-                verbalExpressions.Add(TranslateExpressionToVerbalView(expression));
+                verbalExpressions.Add(TranslateExpressionToVerbalView(expression).Trim());
             }
 
             return verbalExpressions;
@@ -142,7 +142,8 @@ namespace lab1
                 }
             } catch (Exception)
             {
-                throw new Exception("Error translation arithmetic expression into verbal representation");
+                //throw new Exception("Error translation arithmetic expression into verbal representation");
+                CompleteProgramExecution("Error translation arithmetic expression into verbal representation");
             }
             
 
@@ -161,16 +162,25 @@ namespace lab1
 
         private List<String?> ReadInputDataFromFile(string inputFileName)
         {
-            StreamReader inputFile = new StreamReader(inputFileName);
             List<string> inputExpressions = new List<string>();
-            string expression = inputFile.ReadLine();
-            while (expression != null)
-            {
-                inputExpressions.Add(expression);
-                expression = inputFile.ReadLine();
-            };
 
-            inputFile.Close();
+            try
+            {
+                StreamReader inputFile = new StreamReader(inputFileName);
+                string expression = inputFile.ReadLine();
+                while (expression != null)
+                {
+                    inputExpressions.Add(expression);
+                    expression = inputFile.ReadLine();
+                };
+
+                inputFile.Close();
+            } catch (Exception)
+            {
+                //throw new FileNotFoundException("File for reading is not found");
+                CompleteProgramExecution("File for reading is not found");
+            }
+            
             return inputExpressions;
         }
 
@@ -178,11 +188,24 @@ namespace lab1
         {
             if (args.Length != 5)
             {
-                throw new Exception("There are exactly 5 arguments when generation expressions:\n" + 
+                /*throw new Exception("There are exactly 5 arguments when generation expressions:\n" +
+                    "generation type\n" + 
                     "output file name\n" + 
                     "lines number\n" + 
                     "minimum operands\n" +
-                    "maximum operands number");
+                    "maximum operands number");*/
+                CompleteProgramExecution("There are exactly 5 arguments when generation expressions:\n" +
+                                        "generation type\n" +
+                                        "output file name\n" +
+                                        "lines number\n" +
+                                        "minimum operands\n" +
+                                        "maximum operands number");
+            }
+
+            if (!Regex.IsMatch(args[1], REGEX))
+            {
+                //throw new FileLoadException("Output file must be .txt format");
+                CompleteProgramExecution("Output file must be .txt format");
             }
 
             try
@@ -192,29 +215,64 @@ namespace lab1
                 int.Parse(args[4]);
             } catch (Exception)
             {
-                throw new ArgumentException("The values of the lines number, the minimum and maximum operands number must be numerical");
+                //throw new ArgumentException("The values of the lines number, the minimum and maximum operands number must be numerical");
+                CompleteProgramExecution("The values of the lines number, the minimum and maximum operands number must be numerical");
             }
+
 
         }
-        
-        static void Main(string[] args)
-        {
-            switch (args[0].ToUpper())
-            {
-                case "G":
-                    CheckGenerationArguments(args);
-                    new Utility().Generate(args[1], int.Parse(args[2]),
-                              int.Parse(args[3]),
-                              int.Parse(args[4]));
-                    break;
-                case "T":
-                    new Utility().Translate(args[1], args[2]);
-                    break;
-                default:
-                    new ArgumentException("Illegal argument!");
-                    break;
 
+        private static void CheckTranslationArguments(string[] args)
+        {
+            if (args.Length != 3)
+            {
+                /*throw new Exception("There are exactly 3 arguments when translation expressions:\n" +
+                    "translation type\n" +
+                    "input file name\n" +
+                    "output file name");*/
+                CompleteProgramExecution("There are exactly 3 arguments when translation expressions:\n" +
+                                            "translation type\n" +
+                                            "input file name\n" +
+                                            "output file name");
             }
+
+            if (!Regex.IsMatch(args[1], REGEX) || !Regex.IsMatch(args[2], REGEX))
+            {
+                //throw new FileLoadException("Output and input files must be .txt format");
+                CompleteProgramExecution("Output and input files must be .txt format");
+            }
+        }
+
+        private static void CompleteProgramExecution(string message)
+        {
+            Console.WriteLine("Exception: " + message);
+            Process.GetCurrentProcess().Kill();
+        }
+
+        public static void Main(string[] args)
+        {
+            if (args.Length != 0)
+            {
+                switch (args[0].ToUpper())
+                {
+                    case "G":
+                        CheckGenerationArguments(args);
+                        new Utility().Generate(args[1], int.Parse(args[2]),
+                                  int.Parse(args[3]),
+                                  int.Parse(args[4]));
+                        break;
+                    case "T":
+                        CheckTranslationArguments(args);
+                        new Utility().Translate(args[1], args[2]);
+                        break;
+                    default:
+                        throw new ArgumentException("Illegal argument!");
+                }
+            } else
+            {
+                throw new ArgumentNullException("Arguments are not found");
+            }
+            
         } 
     }    
 }
