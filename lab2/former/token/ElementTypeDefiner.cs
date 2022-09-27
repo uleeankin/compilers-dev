@@ -10,7 +10,7 @@ namespace lab2.former.token
 {
     internal class ElementTypeDefiner
     {
-        public static ElementType define(string element)
+        public static ElementType Define(string element)
         {
             if (IsBracket(element))
             {

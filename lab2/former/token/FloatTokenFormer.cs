@@ -7,21 +7,26 @@ using System.Threading.Tasks;
 
 namespace lab2.former.token
 {
-    internal class FloatTokenFormer : TokenFormer
+    internal class FloatTokenFormer : ITokenFormer
     {
-        private readonly string DEFINITION;
-        private readonly LexicalAnalyzer analyzer;
+        private readonly string _definition;
+        private readonly ILexicalAnalyzer _analyzer;
 
         public FloatTokenFormer()
         {
-            DEFINITION = "константа вещественного типа";
-            analyzer = new FloatLexicalAnalyzer();
+            _definition = "константа вещественного типа";
+            _analyzer = new FloatLexicalAnalyzer();
         }
 
         public string Form(string element)
-        {   
-            analyzer.Analyze(element);
-            return $"<{element}> - {DEFINITION}";
+        { 
+            throw new NotImplementedException();
+        }
+
+        public string Form(string element, int position)
+        {
+            _analyzer.Analyze(element, position);
+            return $"<{element}> - {_definition}";
         }
     }
 }

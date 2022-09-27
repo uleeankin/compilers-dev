@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace lab2.former.token
 {
-    internal class IntegerTokenFormer : TokenFormer
+    internal class IntegerTokenFormer : ITokenFormer
     {
         private readonly string DEFINITION;
 
@@ -18,6 +18,11 @@ namespace lab2.former.token
         public string Form(string element)
         {
             return $"<{element}> - {DEFINITION}";
+        }
+
+        public string Form(string element, int position)
+        {
+            throw new NotImplementedException();
         }
     }
 }

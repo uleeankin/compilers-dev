@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace lab2.former.token
 {
-    internal class OperationSignTokenFormer : TokenFormer
+    internal class OperationSignTokenFormer : ITokenFormer
     {
         private Dictionary<string, string> OPERATION_SIGNS;
 
@@ -24,6 +24,11 @@ namespace lab2.former.token
         public string Form(string element)
         {
             return $"<{element}> - {OPERATION_SIGNS[element]}";
+        }
+
+        public string Form(string element, int position)
+        {
+            throw new NotImplementedException();
         }
     }
 }

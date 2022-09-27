@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lab2.former.token
+namespace lab2.analyzer
 {
-    internal interface TokenFormer
+    public interface ILexicalAnalyzer
     {
-
-        public abstract string Form(string element);
+        public abstract void Analyze(string element, int position);
     }
 }

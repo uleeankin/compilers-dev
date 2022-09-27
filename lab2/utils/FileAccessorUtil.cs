@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace lab2.utils
     public class FileAccessorUtil
     {
 
-        public void WriteDataToFile(List<string> expressions, string fileName)
+        public static void WriteDataToFile(List<string> expressions, string fileName)
         {
             try
             {
@@ -27,7 +28,7 @@ namespace lab2.utils
 
         }
 
-        public List<string?> ReadInputDataFromFile(string inputFileName)
+        public static List<string> ReadInputDataFromFile(string inputFileName)
         {
             List<string> inputExpressions = new List<string>();
 
@@ -43,9 +44,14 @@ namespace lab2.utils
 
                 inputFile.Close();
             }
-            catch (Exception)
+            catch (FileNotFoundException)
             {
                 throw new FileNotFoundException("File for reading is not found");
+            }
+
+            if (inputExpressions.Count == 0)
+            {
+                throw new DataException($"File is empty! File {inputFileName} must contain expression");
             }
 
             return inputExpressions;

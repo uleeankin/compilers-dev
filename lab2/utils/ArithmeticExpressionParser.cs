@@ -8,9 +8,9 @@ namespace lab2.utils
 {
     public class ArithmeticExpressionParser
     {
-        public string[] Parse(string sourseExpression)
+        public string[] Parse(string sourceExpression)
         {
-            return AddBrackets(sourseExpression.Split(" ")).ToArray<string>();
+            return AddBrackets(sourceExpression.Split(" ")).ToArray<string>();
         }
 
         private List<string> AddBrackets(string[] parsedExpression)

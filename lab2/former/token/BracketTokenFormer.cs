@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace lab2.former.token
 {
-    internal class BracketTokenFormer : TokenFormer
+    internal class BracketTokenFormer : ITokenFormer
     {
         private Dictionary<string, string> BRACKETS;
 
@@ -22,6 +22,11 @@ namespace lab2.former.token
         public string Form(string element)
         {
             return $"<{element}> - {BRACKETS[element]}";
+        }
+
+        public string Form(string element, int position)
+        {
+            throw new NotImplementedException();
         }
     }
 }

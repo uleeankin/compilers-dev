@@ -11,47 +11,51 @@ namespace lab2.former.token
     public class TokensFormer
     {
 
-        private readonly TokenFormer bracketTokenFormer;
-        private readonly TokenFormer operationSignsTokenFormer;
-        private readonly TokenFormer integerTokenFormer;
-        private readonly TokenFormer floatTokenFormer;
-        private readonly TokenFormer variableTokenFormer;
+        private readonly ITokenFormer _bracketTokenFormer;
+        private readonly ITokenFormer _operationSignsTokenFormer;
+        private readonly ITokenFormer _integerTokenFormer;
+        private readonly ITokenFormer _floatTokenFormer;
+        private readonly ITokenFormer _variableTokenFormer;
+        private int _currentPosition = 0;
 
         public TokensFormer()
         {
-            bracketTokenFormer = new BracketTokenFormer();
-            operationSignsTokenFormer = new OperationSignTokenFormer();
-            integerTokenFormer = new IntegerTokenFormer();
-            floatTokenFormer = new FloatTokenFormer();
-            variableTokenFormer = new VariableTokenFormer();
+            _bracketTokenFormer = new BracketTokenFormer();
+            _operationSignsTokenFormer = new OperationSignTokenFormer();
+            _integerTokenFormer = new IntegerTokenFormer();
+            _floatTokenFormer = new FloatTokenFormer();
+            _variableTokenFormer = new VariableTokenFormer();
         }
 
-        public List<string> FormTokens(string[] elements)
+        public List<string> Form(string[] elements)
         {
             List<string> result = new List<string>();
 
             foreach (string element in elements)
             {
-                switch(ElementTypeDefiner.define(element))
+                switch(ElementTypeDefiner.Define(element))
                 {
                     case ElementType.BRACKET:
-                        result.Add(bracketTokenFormer.Form(element));
+                        result.Add(_bracketTokenFormer.Form(element));
                         break;
                     case ElementType.OPERATION_SIGN:
-                        result.Add(operationSignsTokenFormer.Form(element));
+                        result.Add(_operationSignsTokenFormer.Form(element));
+                        _currentPosition += 2;
                         break;
                     case ElementType.INTEGER:
-                        result.Add(integerTokenFormer.Form(element));
+                        result.Add(_integerTokenFormer.Form(element));
                         break;
                     case ElementType.FLOAT:
-                        result.Add(floatTokenFormer.Form(element));
+                        result.Add(_floatTokenFormer.Form(element, _currentPosition));
                         break;
                     case ElementType.VARIABLE:
-                        result.Add(variableTokenFormer.Form(element));
+                        result.Add(_variableTokenFormer.Form(element, _currentPosition));
                         break;
                     default:
-                        throw new Exception("неизвестный элемент");
+                        throw new LexicalException($"Неизвестный элемент {element}", _currentPosition);
                 }
+
+                _currentPosition += element.Length;
             }
 
             return result;
