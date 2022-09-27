@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lab2
+namespace lab2.utils
 {
     public class FileAccessorUtil
     {
@@ -27,7 +27,7 @@ namespace lab2
 
         }
 
-        public List<String?> ReadInputDataFromFile(string inputFileName)
+        public List<string?> ReadInputDataFromFile(string inputFileName)
         {
             List<string> inputExpressions = new List<string>();
 

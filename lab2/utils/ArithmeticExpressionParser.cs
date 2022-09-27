@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lab2
+namespace lab2.utils
 {
     public class ArithmeticExpressionParser
     {
         public string[] Parse(string sourseExpression)
         {
-            return this.AddBrackets(sourseExpression.Split(" ")).ToArray<string>();
+            return AddBrackets(sourseExpression.Split(" ")).ToArray<string>();
         }
 
         private List<string> AddBrackets(string[] parsedExpression)
@@ -19,12 +19,14 @@ namespace lab2
 
             foreach (string elem in parsedExpression)
             {
-                if (elem.Contains('(') || elem.Contains(')')) {
-                    foreach (string sep in this.SeparateBrackets(elem))
+                if (elem.Contains('(') || elem.Contains(')'))
+                {
+                    foreach (string sep in SeparateBrackets(elem))
                     {
                         result.Add(sep);
                     }
-                } else
+                }
+                else
                 {
                     result.Add(elem);
                 }
@@ -40,14 +42,15 @@ namespace lab2
 
             while (i < stringWithBrackets.Length)
             {
-                if (stringWithBrackets[i] == '(' 
+                if (stringWithBrackets[i] == '('
                     || stringWithBrackets[i] == ')')
                 {
                     result.Add(stringWithBrackets[i].ToString());
-                } else
+                }
+                else
                 {
-                    result.Add(this.SeparateOperatorsAndOperands(stringWithBrackets, ref i));
-                    
+                    result.Add(SeparateOperatorsAndOperands(stringWithBrackets, ref i));
+
                 }
                 i++;
             }

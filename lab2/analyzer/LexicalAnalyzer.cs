@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lab2
+namespace lab2.analyzer
 {
-    public class TokensFormer
+    public interface LexicalAnalyzer
     {
+        public abstract void Analyze(string element);
     }
 }
