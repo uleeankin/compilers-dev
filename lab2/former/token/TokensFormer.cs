@@ -1,4 +1,5 @@
-﻿using System;
+﻿using lab2.utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,67 +32,29 @@ namespace lab2.former.token
 
             foreach (string element in elements)
             {
-                if (IsBracket(element))
+                switch(ElementTypeDefiner.define(element))
                 {
-                    result.Add(bracketTokenFormer.Form(element));
-                    continue;
+                    case ElementType.BRACKET:
+                        result.Add(bracketTokenFormer.Form(element));
+                        break;
+                    case ElementType.OPERATION_SIGN:
+                        result.Add(operationSignsTokenFormer.Form(element));
+                        break;
+                    case ElementType.INTEGER:
+                        result.Add(integerTokenFormer.Form(element));
+                        break;
+                    case ElementType.FLOAT:
+                        result.Add(floatTokenFormer.Form(element));
+                        break;
+                    case ElementType.VARIABLE:
+                        result.Add(variableTokenFormer.Form(element));
+                        break;
+                    default:
+                        throw new Exception("неизвестный элемент");
                 }
-
-                if (IsOperationSign(element))
-                {
-                    result.Add(operationSignsTokenFormer.Form(element));
-                    continue;
-                }
-
-                if (IsInteger(element))
-                {
-                    result.Add(integerTokenFormer.Form(element));
-                    continue;
-                }
-
-                if (IsFloat(element))
-                {
-                    result.Add(floatTokenFormer.Form(element));
-                    continue;
-                }
-
-                if (IsVariable(element))
-                {
-                    result.Add(variableTokenFormer.Form(element));
-                    continue;
-                }
-
-                throw new Exception("Unknown element (do rigth exception)");
             }
 
             return result;
-        }
-
-        private bool IsBracket(string element)
-        {
-            string[] brackets = { "(", ")" };
-            return brackets.Contains(element);
-        }
-
-        private bool IsOperationSign(string element)
-        {
-            string[] operationSigns = { "+", "-", "*", "/" };
-            return operationSigns.Contains(element);
-        }
-
-        private bool IsInteger(string element)
-        {
-            return Regex.IsMatch(element, @"^[0-9]+$");
-        }
-
-        private bool IsFloat(string element)
-        {
-            return Regex.IsMatch(element, @"^[0-9.]+$");
-        }
-
-        private bool IsVariable(string element)
-        {
-            return Regex.IsMatch(element, @"^[a-zA-Z0-9_]+$");
         }
 
     }
