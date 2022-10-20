@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lab2.former.token
+namespace lab2.utils
 {
     internal class BracketTokenFormer : ITokenFormer
     {

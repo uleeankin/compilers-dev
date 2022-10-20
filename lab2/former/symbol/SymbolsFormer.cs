@@ -4,10 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using lab2.former.token;
 using lab2.utils;
 
-namespace lab2.former.symbol
+namespace lab2.symbol
 {
     public class SymbolsFormer
     {

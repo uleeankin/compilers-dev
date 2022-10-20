@@ -6,20 +6,59 @@ namespace lab2.utils
     {
         public static void CheckArguments(string[] args)
         {
-            if (args.Length != 3)
+            if (args.Length == 0)
             {
-                throw new ArgumentException("You must input 3 arguments:\n" +
-                                            "1) file with source expression;\n" +
-                                            "2) file name for tokens;\n" +
-                                            "3) file name for symbols.");
+                throw new ArgumentException("Arguments not found");
             }
-            foreach (string arg in args)
+
+            switch (args[0].ToUpper())
             {
-                if (!Regex.IsMatch(arg, @"(.txt)$"))
+                case "LEX":
+                    CheckArgumentsInLexMode(args);
+                    break;
+                case "SYN":
+                    CheckArgumentsInSynMode(args);
+                    break;
+                default:
+                    throw new ArgumentException("Undefined mode!");
+            }
+        }
+
+        private static void CheckArgumentsInLexMode(string[] args)
+        {
+            if (args.Length != 4)
+            {
+                throw new ArgumentException("You must input 4 arguments:\n" +
+                                                        "1) mode" + 
+                                                        "2) file with source expression;\n" +
+                                                        "3) file name for tokens;\n" +
+                                                        "4) file name for symbols.");
+            }
+            for (int i = 1; i < args.Length; i++)
+            {
+                if (!Regex.IsMatch(args[i], @"(.txt)$"))
                 {
                     throw new ArgumentException("All arguments must be format files .txt!");
                 }
+            }    
+        }
+
+        private static void CheckArgumentsInSynMode(string[] args)
+        {
+            if (args.Length != 3)
+            {
+                throw new ArgumentException("You must input 4 arguments:\n" +
+                                            "1) mode" + 
+                                            "2) file with source expression;\n" +
+                                            "3) file name for tree.");
             }
+            for (int i = 1; i < args.Length; i++)
+            {
+                if (!Regex.IsMatch(args[i], @"(.txt)$"))
+                {
+                    throw new ArgumentException("All arguments must be format files .txt!");
+                }
+            }    
         }
     }
 }

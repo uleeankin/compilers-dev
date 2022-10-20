@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using lab2.utils;
 
-namespace lab2.analyzer
+namespace lab2.analyzer.syntax.lexical
 {
     internal class VariableLexicalAnalyzer : ILexicalAnalyzer
     {

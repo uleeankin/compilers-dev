@@ -1,4 +1,4 @@
-﻿namespace lab2.former.token;
+﻿namespace lab2.utils;
 
 public interface ITokenFormer
 {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace lab2.former.token
+namespace lab2.utils
 {
     public class TokensFormer
     {
@@ -15,7 +15,7 @@ namespace lab2.former.token
         private readonly ITokenFormer _operationSignsTokenFormer;
         private readonly ITokenFormer _integerTokenFormer;
         private readonly ITokenFormer _floatTokenFormer;
-        private readonly ITokenFormer _variableTokenFormer;
+        private readonly VariableTokenFormer _variableTokenFormer;
         private int _currentPosition = 0;
 
         public TokensFormer()
@@ -49,7 +49,10 @@ namespace lab2.former.token
                         result.Add(_floatTokenFormer.Form(element, _currentPosition));
                         break;
                     case ElementType.VARIABLE:
-                        result.Add(_variableTokenFormer.Form(element, _currentPosition));
+                        if (_variableTokenFormer.IsUniqueVariable(element))
+                        {
+                            result.Add(_variableTokenFormer.Form(element, _currentPosition));    
+                        }
                         break;
                     default:
                         throw new LexicalException($"Неизвестный элемент {element}", _currentPosition);

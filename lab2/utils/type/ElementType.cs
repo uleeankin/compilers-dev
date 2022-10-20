@@ -13,6 +13,8 @@ namespace lab2.utils
         INTEGER,
         FLOAT,
         VARIABLE,
+        NUMBER,
+        OPERAND,
         UNKNOWN
     }
 }
