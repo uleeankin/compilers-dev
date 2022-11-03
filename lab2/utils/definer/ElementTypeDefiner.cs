@@ -71,34 +71,6 @@ namespace lab2.utils
             return ElementType.UNKNOWN;
 
         }
-        
-        public static ElementType DefineTreeType(string element)
-        {
-            if (IsBracket(element))
-            {
-                return ElementType.BRACKET;
-            }
-
-            if (IsOperationSign(element))
-            {
-                return ElementType.OPERATION_SIGN;
-            }
-
-            if (IsInteger(element) || IsFloat(element) || IsVariableToken(element))
-            {
-                return ElementType.OPERAND;
-            }
-
-            if (element == "Int2Float")
-            {
-                return ElementType.INT_TO_FLOAT;
-            }
-
-            return ElementType.UNKNOWN;
-
-        }
-        
-        
 
         private static bool IsBracket(string element)
         {

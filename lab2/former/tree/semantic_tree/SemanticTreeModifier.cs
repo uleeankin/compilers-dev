@@ -15,7 +15,10 @@ public class SemanticTreeModifier
 
     public Tree Modify()
     {
-        ModifyTree(_tree);
+        if (IsContainsFloat(_tree))
+        {
+            ModifyTree(_tree);    
+        }
         return _tree;
     }
     
@@ -27,7 +30,7 @@ public class SemanticTreeModifier
             return;
         }
 
-        if (tree.Value.Type == ElementType.OPERATION_SIGN && IsContainsFloat(tree))
+        if (tree.Value.Type == ElementType.OPERATION_SIGN)
         {
             ConvertLeftNodeType(tree);
             ConvertRightNodeType(tree);
@@ -106,55 +109,5 @@ public class SemanticTreeModifier
         }
 
         return returned;
-    }
-    
-    public List<Element> ModifyExpression(List<Element> tokens)
-    {
-
-        for (int i = 0; i < tokens.Count; i++)
-        {
-            if (tokens[i].Type == ElementType.OPERATION_SIGN)
-            {
-                if (CheckNeighbourElementsType(tokens[i - 1], i)
-                    && !CheckNeighbourElementsType(tokens[i + 1], i))
-                {
-                    if (tokens[i + 1].Type == ElementType.INTEGER)
-                    {
-                        tokens[i + 1].Type = ElementType.FLOAT;
-                    }
-                    if (tokens[i + 1].Type == ElementType.INTEGER_VARIABLE)
-                    {
-                        tokens[i + 1].Type = ElementType.FLOAT_VARIABLE;
-                    }
-                    tokens.Insert(i + 1, new Element("Int2Float", "", i, ElementType.INT_TO_FLOAT));
-                    i++;
-                }
-                else
-                {
-                    if (!CheckNeighbourElementsType(tokens[i - 1], i)
-                        && CheckNeighbourElementsType(tokens[i + 1], i))
-                    {
-                        if (tokens[i - 1].Type == ElementType.INTEGER)
-                        {
-                            tokens[i - 1].Type = ElementType.FLOAT;
-                        }
-                        if (tokens[i - 1].Type == ElementType.INTEGER_VARIABLE)
-                        {
-                            tokens[i - 1].Type = ElementType.FLOAT_VARIABLE;
-                        }
-                        tokens.Insert(i - 1, new Element("Int2Float", "", i, ElementType.INT_TO_FLOAT));    
-                    }
-                }
-            }
-        }
-        
-        return tokens;
-    }
-
-    private bool CheckNeighbourElementsType(Element element,
-        int operationSignIndex)
-    {
-        return element.Type == ElementType.FLOAT
-               || element.Type == ElementType.FLOAT_VARIABLE;
     }
 }
