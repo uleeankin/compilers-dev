@@ -6,11 +6,11 @@ public class BracketSyntaxAnalyzer : ISyntaxAnalyzer
 {
     private Stack<int> _openedBrackets = new Stack<int>();
     private Stack<int> _closedBrackets = new Stack<int>();
-    public void Analyze(List<string> elements, string element, int index)
+    public void Analyze(List<Element> elements, string element, int index)
     {
         for (int i = 0; i < elements.Count; i++)
         {
-            string elem = elements[i].Substring(1, elements[i].Length - 2);
+            string elem = elements[i].Token;
             if (ElementTypeDefiner.DefineType(elem) == ElementType.BRACKET)
             {
                 if (BracketTypeDefiner.Define(elem) == BracketType.OPENED)
@@ -35,20 +35,20 @@ public class BracketSyntaxAnalyzer : ISyntaxAnalyzer
         
     }
 
-    private void GetSyntaxException(List<string> elements)
+    private void GetSyntaxException(List<Element> elements)
     {
         if (this._openedBrackets.Count != 0)
         {
             List<int> openedBrackets = new List<int>(_openedBrackets.ToArray());
-            throw new SyntaxException("У открывающей скобки", elements[openedBrackets[0]],
-                ElementPositionDefiner.GetPosition(elements, openedBrackets[0]), "закрывающая скобка");
+            throw new SyntaxException("У открывающей скобки", elements[openedBrackets[0]].Token,
+                elements[openedBrackets[0]].Position, "закрывающая скобка");
         }
         
         if (this._closedBrackets.Count != 0)
         {
             List<int> closedBrackets = new List<int>(_closedBrackets.ToArray());
-            throw new SyntaxException("У закрывающей скобки", elements[closedBrackets[0]],
-                ElementPositionDefiner.GetPosition(elements, closedBrackets[0]), "открывающая скобка");
+            throw new SyntaxException("У закрывающей скобки", elements[closedBrackets[0]].Token,
+                elements[closedBrackets[0]].Position, "открывающая скобка");
         }
     }
 

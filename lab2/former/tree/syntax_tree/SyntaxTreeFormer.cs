@@ -13,23 +13,24 @@ public class SyntaxTreeFormer
     {
     }
 
-    public Tree Form(List<string> elements)
+    public Tree Form(List<Element> elements)
     {
         new SyntaxAnalyzer().Analyze(elements);
         return FormTree(elements);
     }
 
-    private Tree FormTree(List<string> elements)
+    private Tree FormTree(List<Element> elements)
     {
         Tree currentTree = new Tree();
-        List<string> tokens = AddBrackets(elements);
+        List<Element> tokens = AddBrackets(elements);
 
-        foreach (string token in tokens)
+        foreach (Element token in tokens)
         {
-            string element = token.Substring(1, token.Length - 2);
-            if (ElementTypeDefiner.Define(element) == ElementType.BRACKET)
+            if (token.Type == ElementType.BRACKET)
             {
-                if (BracketTypeDefiner.Define(element) == BracketType.OPENED)
+                if (BracketTypeDefiner.Define(
+                        token.Token.Substring(1, token.Token.Length - 2)) 
+                    == BracketType.OPENED)
                 {
                     currentTree.LeftNode = new Tree(currentTree);
                     currentTree = currentTree.LeftNode;
@@ -42,7 +43,10 @@ public class SyntaxTreeFormer
                     }
                 }
             }
-            else if (ElementTypeDefiner.DefineTreeType(element) == ElementType.OPERAND)
+            else if (token.Type == ElementType.INTEGER
+                     || token.Type == ElementType.FLOAT
+                     || token.Type == ElementType.FLOAT_VARIABLE
+                     || token.Type == ElementType.INTEGER_VARIABLE)
             {
                 currentTree.Value = token;
                 if (currentTree.ParentNode == null)
@@ -51,11 +55,11 @@ public class SyntaxTreeFormer
                     currentTree.ParentNode.LeftNode = currentTree;
                 }
                 currentTree = currentTree.ParentNode;
-                
-            } else if (ElementTypeDefiner.DefineTreeType(element) 
+
+            } else if (token.Type 
                        == ElementType.OPERATION_SIGN)
             {
-                if (currentTree.Value != "")
+                if (currentTree.Value.Token != "")
                 {
                     Tree tempRight = currentTree.RightNode;
                     currentTree.RightNode = new Tree(currentTree);
@@ -84,12 +88,13 @@ public class SyntaxTreeFormer
         return GetRoot(tree.ParentNode);
     }
 
-    private List<string> AddBrackets(List<string> elements)
+    private List<Element> AddBrackets(List<Element> elements)
     {
-        if (elements[0] != "(" && elements[elements.Count - 1] != ")")
+        if (!elements[0].Token.Contains("(") 
+            && !elements[elements.Count - 1].Token.Contains(")"))
         {
-            elements.Insert(0, _firstBracket);
-            elements.Add(_lastBracket);
+            elements.Insert(0, new Element(_firstBracket, "", 0, ElementType.BRACKET));
+            elements.Add(new Element(_lastBracket, "", 0, ElementType.BRACKET));
         }
 
         return elements;

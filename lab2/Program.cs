@@ -19,6 +19,9 @@ namespace lab2
                 case "SYN":
                     new Utility(args[0], args[1], args[2]).Run();
                     break;
+                case "SEM":
+                    new Utility(args[0], args[1], args[2]).Run();
+                    break;
             }
         }
     }

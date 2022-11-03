@@ -14,7 +14,7 @@ public class TreeOutputFormer
             prefix = _branchIndent;
         }
         
-        result.Add(prefix + tree.Value);
+        result.Add(prefix + tree.Value.Token);
 
         if (tree.LeftNode != null)
         {

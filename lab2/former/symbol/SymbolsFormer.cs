@@ -10,14 +10,18 @@ namespace lab2.symbol
 {
     public class SymbolsFormer
     {
-        public List<string> Form(string[] elements)
+        public List<string> Form(List<Element> elements)
         {
             List<string> variables = new List<string>();
-            foreach (string element in elements)
+            foreach (Element element in elements)
             {
-                if (ElementTypeDefiner.Define(element) == ElementType.VARIABLE)
+                if (element.Type == ElementType.FLOAT_VARIABLE)
                 {
-                    variables.Add(element);
+                    variables.Add(element.Token + " [вещественный]");
+                }
+                if (element.Type == ElementType.INTEGER_VARIABLE)
+                {
+                    variables.Add(element.Token + " [целый]");
                 }
             }
 

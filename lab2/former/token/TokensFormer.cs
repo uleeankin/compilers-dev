@@ -27,31 +27,56 @@ namespace lab2.utils
             _variableTokenFormer = new VariableTokenFormer();
         }
 
-        public List<string> Form(string[] elements)
+        public List<Element> Form(string[] elements)
         {
-            List<string> result = new List<string>();
+            List<Element> result = new List<Element>();
+            string el;
 
             foreach (string element in elements)
             {
                 switch(ElementTypeDefiner.Define(element))
                 {
                     case ElementType.BRACKET:
-                        result.Add(_bracketTokenFormer.Form(element));
+                        el = _bracketTokenFormer.Form(element);
+                        result.Add(new Element(TokensParser.GetToken(el), 
+                                            TokensParser.GetDescription(el),
+                                                    _currentPosition, ElementType.BRACKET));
                         break;
                     case ElementType.OPERATION_SIGN:
-                        result.Add(_operationSignsTokenFormer.Form(element));
+                        el = _operationSignsTokenFormer.Form(element);
+                        result.Add(new Element(TokensParser.GetToken(el),
+                            TokensParser.GetDescription(el),
+                            _currentPosition, ElementType.OPERATION_SIGN));
                         _currentPosition += 2;
                         break;
                     case ElementType.INTEGER:
-                        result.Add(_integerTokenFormer.Form(element));
+                        el = _integerTokenFormer.Form(element);
+                        result.Add(new Element(TokensParser.GetToken(el),
+                            TokensParser.GetDescription(el),
+                            _currentPosition, ElementType.INTEGER));
                         break;
                     case ElementType.FLOAT:
-                        result.Add(_floatTokenFormer.Form(element, _currentPosition));
+                        el = _floatTokenFormer.Form(element);
+                        result.Add(new Element(TokensParser.GetToken(el),
+                            TokensParser.GetDescription(el),
+                            _currentPosition, ElementType.FLOAT));
                         break;
-                    case ElementType.VARIABLE:
+                    case ElementType.FLOAT_VARIABLE:
                         if (_variableTokenFormer.IsUniqueVariable(element))
                         {
-                            result.Add(_variableTokenFormer.Form(element, _currentPosition));    
+                            el = _variableTokenFormer.Form(element, _currentPosition);
+                            result.Add(new Element(TokensParser.GetToken(el),
+                                TokensParser.GetDescription(el),
+                                _currentPosition, ElementType.FLOAT_VARIABLE));    
+                        }
+                        break;
+                    case ElementType.INTEGER_VARIABLE:
+                        if (_variableTokenFormer.IsUniqueVariable(element))
+                        {
+                            el = _variableTokenFormer.Form(element, _currentPosition);
+                            result.Add(new Element(TokensParser.GetToken(el),
+                                TokensParser.GetDescription(el),
+                                _currentPosition, ElementType.INTEGER_VARIABLE));    
                         }
                         break;
                     default:

@@ -7,15 +7,32 @@ public class TokensParser
         
     }
 
-    public static List<string> GetTokens(List<string> tokensAndDescriptions)
+    public static List<string> GetTokens(List<Element> tokensAndDescriptions)
     {
         List<string> result = new List<string>();
 
-        foreach (string token in tokensAndDescriptions)
+        foreach (Element token in tokensAndDescriptions)
         {
-            result.Add(token.Substring(0, token.IndexOf('>') + 1));
+            if (token.Type == ElementType.INT_TO_FLOAT)
+            {
+                result.Add(token.Token);
+            }
+            else
+            {
+                result.Add(token.Token.Substring(0, token.Token.IndexOf('>') + 1));    
+            }
         }
         
         return result;
+    }
+
+    public static string GetToken(string tokenWithDescription)
+    {
+        return tokenWithDescription.Substring(0, tokenWithDescription.IndexOf('>') + 1);
+    }
+    
+    public static string GetDescription(string tokenWithDescription)
+    {
+        return tokenWithDescription.Substring(tokenWithDescription.IndexOf('-') + 2);
     }
 }

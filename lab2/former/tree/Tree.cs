@@ -8,9 +8,9 @@ public class Tree
     private Tree _parentNode;
     private Tree _leftNode;
     private Tree _rightNode;
-    private string _value;
+    private Element _value;
 
-    public string Value
+    public Element Value
     {
         get => _value;
         set => _value = value;
@@ -36,7 +36,7 @@ public class Tree
 
     public Tree()
     {
-        _value = "";
+        _value = new Element("", "", -1, ElementType.UNKNOWN);
         _parentNode = null;
         _leftNode = null;
         _rightNode = null;
@@ -44,7 +44,7 @@ public class Tree
     
     public Tree(Tree parentNode)
     {
-        _value = "";
+        _value = new Element("", "", -1, ElementType.UNKNOWN);
         _parentNode = parentNode;
         _leftNode = null;
         _rightNode = null;

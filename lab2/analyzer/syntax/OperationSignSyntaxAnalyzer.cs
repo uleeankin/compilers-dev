@@ -4,7 +4,7 @@ namespace lab2.analyzer.syntax;
 
 public class OperationSignSyntaxAnalyzer : ISyntaxAnalyzer
 {
-    public void Analyze(List<string> elements, string element, int index)
+    public void Analyze(List<Element> elements, string element, int index)
     {
         if (!this.GetAdjacentElement(elements, index))
         {
@@ -12,25 +12,25 @@ public class OperationSignSyntaxAnalyzer : ISyntaxAnalyzer
         }
     }
     
-    private bool GetAdjacentElement(List<string> elements, int index)
+    private bool GetAdjacentElement(List<Element> elements, int index)
     {
         string nextElement;
         string previousElement;
         
         if (index == 0)
         {
-            nextElement = elements[1];
+            nextElement = elements[1].Token;
             return this.IsNumberOrVariable(nextElement);
         }
 
         if (index == elements.Count - 1)
         {
-            previousElement = elements[index - 1];
+            previousElement = elements[index - 1].Token;
             return this.IsNumberOrVariable(previousElement);
         }
         
-        nextElement = elements[index + 1];
-        previousElement = elements[index - 1];
+        nextElement = elements[index + 1].Token;
+        previousElement = elements[index - 1].Token;
 
         return (this.IsNumberOrVariable(nextElement) 
                || this.IsNumberOrVariable(previousElement))
@@ -50,9 +50,9 @@ public class OperationSignSyntaxAnalyzer : ISyntaxAnalyzer
         return type == ElementType.BRACKET;
     }
 
-    private void GetOperationSignSyntaxException(List<string> elements, string element, int index)
+    private void GetOperationSignSyntaxException(List<Element> elements, string element, int index)
     {
         throw new SyntaxException("У операции", element,
-            ElementPositionDefiner.GetPosition(elements, index), "операнд");
+            elements[index].Position, "операнд");
     }
 }

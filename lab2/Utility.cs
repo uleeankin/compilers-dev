@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
+using lab2.analyzer.semantic;
 using lab2.symbol;
 using lab2.syntax_tree;
 using lab2.utils;
@@ -16,9 +17,8 @@ namespace lab2
         private readonly string _outputTokensFileName;
         private readonly string _outputSymbolsFileName;
         private readonly string _outputTreeFileName;
-        private string[] _parsedExpression;
-        private List<string> _tokens = new List<string>();
-        private Mode _operatingMode;
+        private List<Element> _parsedExpression;
+        private readonly Mode _operatingMode;
 
         public Utility(string operatingMode,
                         string inputFileName,
@@ -50,6 +50,9 @@ namespace lab2
                 case Mode.SYN:
                     this.DoSyntaxMode();
                     break;
+                case Mode.SEM:
+                    this.DoSemanticMode();
+                    break;
                 default:
                     throw new ArgumentException("Error mode!");
             }
@@ -57,11 +60,12 @@ namespace lab2
 
         private void DoLexicalMode()
         {
-            _parsedExpression = new ArithmeticExpressionParser().Parse(
-                FileAccessorUtil
-                    .ReadInputDataFromFile(_inputFileName)[0]);
-            FileAccessorUtil.WriteDataToFile(new TokensFormer()
-                    .Form(this._parsedExpression), 
+            _parsedExpression = new TokensFormer().Form(
+                new ArithmeticExpressionParser().Parse(
+                            FileAccessorUtil
+                                .ReadInputDataFromFile(_inputFileName)[0]));
+            FileAccessorUtil.WriteDataToFile(
+                TokensListGetter.GetTokensWithDescription(this._parsedExpression), 
                 _outputTokensFileName);
             FileAccessorUtil.WriteDataToFile(new SymbolsFormer()
                     .Form(this._parsedExpression), 
@@ -70,14 +74,29 @@ namespace lab2
 
         private void DoSyntaxMode()
         {
-            _parsedExpression = new ArithmeticExpressionParser().Parse(
-                FileAccessorUtil
-                    .ReadInputDataFromFile(_inputFileName)[0]);
+            _parsedExpression = new TokensFormer().Form(
+                new ArithmeticExpressionParser().Parse(
+                            FileAccessorUtil
+                                .ReadInputDataFromFile(_inputFileName)[0]));
             List<string> tree = new TreeOutputFormer().FormOutputTree(
                 new SyntaxTreeFormer().Form(
-                    TokensParser.GetTokens(
-                        new TokensFormer().Form(_parsedExpression))),
+                    _parsedExpression),
                 "");
+            FileAccessorUtil.WriteDataToFile(tree, 
+                _outputTreeFileName);
+        }
+
+        private void DoSemanticMode()
+        {
+            _parsedExpression = new TokensFormer().Form(new ArithmeticExpressionParser().Parse(
+                FileAccessorUtil
+                    .ReadInputDataFromFile(_inputFileName)[0]));
+            
+            Tree syntaxTree = new SyntaxTreeFormer().Form(_parsedExpression);
+            new SemanticAnalyzer().Analyze(syntaxTree);
+            
+            List<string> tree = new TreeOutputFormer().FormOutputTree(
+                new SemanticTreeModifier(syntaxTree).Modify(),"");
             FileAccessorUtil.WriteDataToFile(tree, 
                 _outputTreeFileName);
         }
@@ -90,6 +109,8 @@ namespace lab2
                     return Mode.LEX;
                 case "SYN":
                     return Mode.SYN;
+                case "SEM":
+                    return Mode.SEM;
                 default:
                     throw new ArgumentException("Error mode!");
             }

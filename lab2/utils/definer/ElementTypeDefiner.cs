@@ -34,7 +34,12 @@ namespace lab2.utils
 
             if (IsVariable(element))
             {
-                return ElementType.VARIABLE;
+                if (element.Contains("[F]") || element.Contains("[f]"))
+                {
+                    return ElementType.FLOAT_VARIABLE;
+                }
+                
+                return ElementType.INTEGER_VARIABLE;
             }
 
             return ElementType.UNKNOWN;
@@ -43,7 +48,6 @@ namespace lab2.utils
         
         public static ElementType DefineType(string element)
         {
-            //element = element.Substring(1, element.Length - 2);
             if (IsBracket(element))
             {
                 return ElementType.BRACKET;
@@ -85,6 +89,11 @@ namespace lab2.utils
                 return ElementType.OPERAND;
             }
 
+            if (element == "Int2Float")
+            {
+                return ElementType.INT_TO_FLOAT;
+            }
+
             return ElementType.UNKNOWN;
 
         }
@@ -115,6 +124,13 @@ namespace lab2.utils
 
         private static bool IsVariable(string element)
         {
+            if (element.Contains("[F]")
+                || element.Contains("[f]")
+                || element.Contains("[I]")
+                || element.Contains("[i]"))
+            {
+                element = element.Substring(0, element.Length - 3);
+            }
             return Regex.IsMatch(element, @"^[a-zA-Z0-9_]+$");
         }
         
