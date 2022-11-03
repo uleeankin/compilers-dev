@@ -29,24 +29,48 @@ public class SemanticTreeModifier
 
         if (tree.Value.Type == ElementType.OPERATION_SIGN && IsContainsFloat(tree))
         {
-            if (tree.LeftNode != null && (tree.LeftNode.Value.Type == ElementType.INTEGER 
-                                          || tree.LeftNode.Value.Type == ElementType.INTEGER_VARIABLE))
-            {
-                Tree temp = tree.LeftNode;
-                Element element = new Element("Int2Float", "", -1, ElementType.INT_TO_FLOAT);
-                
-                Tree modifiedTree = new Tree();
-                tree.LeftNode = modifiedTree;
-                temp.ParentNode = modifiedTree;
-                modifiedTree.LeftNode = temp;
-                
-                modifiedTree.Value = element;
-                modifiedTree.ParentNode = tree;
-            }
+            ConvertLeftNodeType(tree);
+            ConvertRightNodeType(tree);
         }
 
         ModifyTree(tree.LeftNode);
         ModifyTree(tree.RightNode);
+    }
+
+    private void ConvertRightNodeType(Tree tree)
+    {
+        if (tree.RightNode != null && (tree.RightNode.Value.Type == ElementType.INTEGER 
+                                       || tree.RightNode.Value.Type == ElementType.INTEGER_VARIABLE))
+        {
+            Tree temp = tree.RightNode;
+            Element element = new Element("Int2Float", "", -1, ElementType.INT_TO_FLOAT);
+                
+            Tree modifiedTree = new Tree();
+            tree.RightNode = modifiedTree;
+            temp.ParentNode = modifiedTree;
+            modifiedTree.RightNode = temp;
+                
+            modifiedTree.Value = element;
+            modifiedTree.ParentNode = tree;
+        }
+    }
+
+    private void ConvertLeftNodeType(Tree tree)
+    {
+        if (tree.LeftNode != null && (tree.LeftNode.Value.Type == ElementType.INTEGER 
+                                      || tree.LeftNode.Value.Type == ElementType.INTEGER_VARIABLE))
+        {
+            Tree temp = tree.LeftNode;
+            Element element = new Element("Int2Float", "", -1, ElementType.INT_TO_FLOAT);
+                
+            Tree modifiedTree = new Tree();
+            tree.LeftNode = modifiedTree;
+            temp.ParentNode = modifiedTree;
+            modifiedTree.LeftNode = temp;
+                
+            modifiedTree.Value = element;
+            modifiedTree.ParentNode = tree;
+        }
     }
 
     private bool IsContainsFloat(Tree tree)

@@ -56,7 +56,7 @@ namespace lab2.utils
                             _currentPosition, ElementType.INTEGER));
                         break;
                     case ElementType.FLOAT:
-                        el = _floatTokenFormer.Form(element);
+                        el = _floatTokenFormer.Form(element, _currentPosition);
                         result.Add(new Element(TokensParser.GetToken(el),
                             TokensParser.GetDescription(el),
                             _currentPosition, ElementType.FLOAT));
