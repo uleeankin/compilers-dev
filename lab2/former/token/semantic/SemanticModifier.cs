@@ -12,15 +12,18 @@ public class SemanticModifier
                 if (CheckNeighbourElementsType(tokens[i - 1])
                     && !CheckNeighbourElementsType(tokens[i + 1]))
                 {
-                    if (tokens[i + 1].Type == ElementType.INTEGER)
+                    if (tokens[i].Token == "<+>" || tokens[i].Token == "<->")
                     {
-                        tokens[i + 1].Type = ElementType.FLOAT;
+                        if (tokens[i + 1].Type == ElementType.INTEGER)
+                        {
+                            tokens[i + 1].Type = ElementType.FLOAT;
+                        }
+                        if (tokens[i + 1].Type == ElementType.INTEGER_VARIABLE)
+                        {
+                            tokens[i + 1].Type = ElementType.FLOAT_VARIABLE;
+                        }
+                        tokens.Insert(i + 1, new Element("<i2f>", "IntToFloat", i, ElementType.INT_TO_FLOAT));
                     }
-                    if (tokens[i + 1].Type == ElementType.INTEGER_VARIABLE)
-                    {
-                        tokens[i + 1].Type = ElementType.FLOAT_VARIABLE;
-                    }
-                    tokens.Insert(i + 1, new Element("Int2Float", "", i, ElementType.INT_TO_FLOAT));
                     i++;
                 }
                 else
@@ -28,15 +31,18 @@ public class SemanticModifier
                     if (!CheckNeighbourElementsType(tokens[i - 1])
                         && CheckNeighbourElementsType(tokens[i + 1]))
                     {
-                        if (tokens[i - 1].Type == ElementType.INTEGER)
+                        if (tokens[i].Token == "<+>" || tokens[i].Token == "<->")
                         {
-                            tokens[i - 1].Type = ElementType.FLOAT;
+                            if (tokens[i - 1].Type == ElementType.INTEGER)
+                            {
+                                tokens[i - 1].Type = ElementType.FLOAT;
+                            }
+                            if (tokens[i - 1].Type == ElementType.INTEGER_VARIABLE)
+                            {
+                                tokens[i - 1].Type = ElementType.FLOAT_VARIABLE;
+                            }
+                            tokens.Insert(i - 1, new Element("<i2f>", "IntToFloat", i, ElementType.INT_TO_FLOAT));
                         }
-                        if (tokens[i - 1].Type == ElementType.INTEGER_VARIABLE)
-                        {
-                            tokens[i - 1].Type = ElementType.FLOAT_VARIABLE;
-                        }
-                        tokens.Insert(i - 1, new Element("Int2Float", "", i, ElementType.INT_TO_FLOAT));    
                     }
                 }
             }

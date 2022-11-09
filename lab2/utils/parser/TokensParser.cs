@@ -13,14 +13,7 @@ public class TokensParser
 
         foreach (Element token in tokensAndDescriptions)
         {
-            if (token.Type == ElementType.INT_TO_FLOAT)
-            {
-                result.Add(token.Token);
-            }
-            else
-            {
-                result.Add(token.Token.Substring(0, token.Token.IndexOf('>') + 1));    
-            }
+            result.Add(token.Token.Substring(0, token.Token.IndexOf('>') + 1));
         }
         
         return result;

@@ -26,7 +26,7 @@ namespace lab2.utils
                     CheckArgumentsInSynOrSemOrGenMode(args);
                     break;
                 case "GEN2":
-                    CheckArgumentsInSynOrSemOrGenMode(args);
+                    CheckArgumentsInLexMode(args);
                     break;
                 default:
                     throw new ArgumentException("Undefined mode!");

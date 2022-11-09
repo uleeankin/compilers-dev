@@ -12,4 +12,15 @@ public class TokensListGetter
 
         return result;
     }
+    
+    public static List<string> GetTokens(List<Element> elements)
+    {
+        List<string> result = new List<string>();
+        foreach (Element element in elements)
+        {
+            result.Add(element.Token);
+        }
+
+        return result;
+    }
 }

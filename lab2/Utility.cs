@@ -5,6 +5,8 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using lab2.analyzer.semantic;
+using lab2.analyzer.syntax;
+using lab2.former.postfix;
 using lab2.symbol;
 using lab2.syntax_tree;
 using lab2.utils;
@@ -113,7 +115,7 @@ namespace lab2
             _parsedExpression = new TokensFormer().Form(new ArithmeticExpressionParser().Parse(
                 FileAccessorUtil
                     .ReadInputDataFromFile(_inputFileName)[0]));
-            
+
             new SyntaxTreeFormer().Form(_parsedExpression);
             new SemanticAnalyzer().Analyze(_parsedExpression);
             new SemanticModifier().ModifyExpression(_parsedExpression);
@@ -126,9 +128,21 @@ namespace lab2
                 FileAccessorUtil
                     .ReadInputDataFromFile(_inputFileName)[0]));
             
-            new SyntaxTreeFormer().Form(_parsedExpression);
+            new SyntaxAnalyzer().Analyze(_parsedExpression);
             new SemanticAnalyzer().Analyze(_parsedExpression);
             new SemanticModifier().ModifyExpression(_parsedExpression);
+            
+            FileAccessorUtil.WriteDataToFile(
+                new PostfixGeneratorSymbolsFormer()
+                             .Form(this._parsedExpression), 
+                         _outputSymbolsFileName);
+            List<string> tokens = new List<string>
+            {
+                new PostfixExpressionFormer().ConvertInfixToPostfix(
+                    this._parsedExpression)
+            };
+            FileAccessorUtil.WriteDataToFile(
+                tokens, _outputTokensFileName);
         }
 
         private Mode ConvertStringToMode(string mode)
