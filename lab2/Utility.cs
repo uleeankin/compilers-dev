@@ -130,12 +130,12 @@ namespace lab2
             
             new SyntaxAnalyzer().Analyze(_parsedExpression);
             new SemanticAnalyzer().Analyze(_parsedExpression);
-            new SemanticModifier().ModifyExpression(_parsedExpression);
-            
+
             FileAccessorUtil.WriteDataToFile(
                 new PostfixGeneratorSymbolsFormer()
                              .Form(this._parsedExpression), 
                          _outputSymbolsFileName);
+            new SemanticModifier().ModifyExpression(_parsedExpression);
             List<string> tokens = new List<string>
             {
                 new PostfixExpressionFormer().ConvertInfixToPostfix(
