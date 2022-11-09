@@ -22,6 +22,12 @@ namespace lab2
                 case "SEM":
                     new Utility(args[0], args[1], args[2]).Run();
                     break;
+                case "GEN1":
+                    new Utility(args[0], args[1], args[2]).Run();
+                    break;
+                case "GEN2":
+                    new Utility(args[0], args[1], args[2]).Run();
+                    break;
             }
         }
     }

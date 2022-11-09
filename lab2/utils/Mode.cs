@@ -2,5 +2,5 @@
 
 public enum Mode
 {
-    LEX, SYN, SEM
+    LEX, SYN, SEM, GEN1, GEN2
 }

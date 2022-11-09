@@ -17,10 +17,16 @@ namespace lab2.utils
                     CheckArgumentsInLexMode(args);
                     break;
                 case "SYN":
-                    CheckArgumentsInSynOrSemMode(args);
+                    CheckArgumentsInSynOrSemOrGenMode(args);
                     break;
                 case "SEM":
-                    CheckArgumentsInSynOrSemMode(args);
+                    CheckArgumentsInSynOrSemOrGenMode(args);
+                    break;
+                case "GEN1":
+                    CheckArgumentsInSynOrSemOrGenMode(args);
+                    break;
+                case "GEN2":
+                    CheckArgumentsInSynOrSemOrGenMode(args);
                     break;
                 default:
                     throw new ArgumentException("Undefined mode!");
@@ -46,7 +52,7 @@ namespace lab2.utils
             }    
         }
 
-        private static void CheckArgumentsInSynOrSemMode(string[] args)
+        private static void CheckArgumentsInSynOrSemOrGenMode(string[] args)
         {
             if (args.Length != 3)
             {

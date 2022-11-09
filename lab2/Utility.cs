@@ -8,6 +8,7 @@ using lab2.analyzer.semantic;
 using lab2.symbol;
 using lab2.syntax_tree;
 using lab2.utils;
+using lab2.utils.semantic;
 
 namespace lab2
 {
@@ -52,6 +53,12 @@ namespace lab2
                     break;
                 case Mode.SEM:
                     this.DoSemanticMode();
+                    break;
+                case Mode.GEN1:
+                    this.DoFirstGenerationMode();
+                    break;
+                case Mode.GEN2:
+                    this.DoSecondGenerationMode();
                     break;
                 default:
                     throw new ArgumentException("Error mode!");
@@ -101,6 +108,29 @@ namespace lab2
                 _outputTreeFileName);
         }
 
+        private void DoFirstGenerationMode()
+        {
+            _parsedExpression = new TokensFormer().Form(new ArithmeticExpressionParser().Parse(
+                FileAccessorUtil
+                    .ReadInputDataFromFile(_inputFileName)[0]));
+            
+            new SyntaxTreeFormer().Form(_parsedExpression);
+            new SemanticAnalyzer().Analyze(_parsedExpression);
+            new SemanticModifier().ModifyExpression(_parsedExpression);
+              
+        }
+
+        private void DoSecondGenerationMode()
+        {
+            _parsedExpression = new TokensFormer().Form(new ArithmeticExpressionParser().Parse(
+                FileAccessorUtil
+                    .ReadInputDataFromFile(_inputFileName)[0]));
+            
+            new SyntaxTreeFormer().Form(_parsedExpression);
+            new SemanticAnalyzer().Analyze(_parsedExpression);
+            new SemanticModifier().ModifyExpression(_parsedExpression);
+        }
+
         private Mode ConvertStringToMode(string mode)
         {
             switch (mode.ToUpper())
@@ -111,6 +141,10 @@ namespace lab2
                     return Mode.SYN;
                 case "SEM":
                     return Mode.SEM;
+                case "GEN1":
+                    return Mode.GEN1;
+                case "GEN2":
+                    return Mode.GEN2;
                 default:
                     throw new ArgumentException("Error mode!");
             }
