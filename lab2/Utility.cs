@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using lab2.analyzer.semantic;
 using lab2.analyzer.syntax;
+using lab2.former.portable;
 using lab2.former.postfix;
 using lab2.symbol;
 using lab2.syntax_tree;
@@ -119,7 +120,11 @@ namespace lab2
             new SyntaxTreeFormer().Form(_parsedExpression);
             new SemanticAnalyzer().Analyze(_parsedExpression);
             new SemanticModifier().ModifyExpression(_parsedExpression);
-              
+            List<Element> postfixExpression = new PostfixExpressionFormer()
+                .ConvertInfixToPostfix(this._parsedExpression);
+            TokensParser.GetAdditionVariablesFromPortableCode(
+                new PortableCodeFormer().Form(postfixExpression));
+//TODO: собрать portableCode в строки и вывести в файл; соединить обычные переменные и дополнительные в один список и вывести в файл
         }
 
         private void DoSecondGenerationMode()
@@ -138,8 +143,9 @@ namespace lab2
             new SemanticModifier().ModifyExpression(_parsedExpression);
             List<string> tokens = new List<string>
             {
-                new PostfixExpressionFormer().ConvertInfixToPostfix(
-                    this._parsedExpression)
+                string.Join(" ", TokensListGetter.GetTokens(
+                    new PostfixExpressionFormer().ConvertInfixToPostfix(
+                           this._parsedExpression)))
             };
             FileAccessorUtil.WriteDataToFile(
                 tokens, _outputTokensFileName);

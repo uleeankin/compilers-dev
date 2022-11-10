@@ -4,7 +4,7 @@ namespace lab2.former.postfix;
 
 public class PostfixExpressionFormer
 {
-    public string ConvertInfixToPostfix(List<Element> tokens)
+    public List<Element> ConvertInfixToPostfix(List<Element> tokens)
     {
         List<Element> postfixList = new List<Element>();
         Stack<Element> postfix = new Stack<Element>();
@@ -54,7 +54,7 @@ public class PostfixExpressionFormer
             postfixList.Add(postfix.Pop());
         }
         
-        return string.Join(" ", TokensListGetter.GetTokens(postfixList));
+        return postfixList;
     }
 
     private Dictionary<string, int> GetOperatorPriorities()

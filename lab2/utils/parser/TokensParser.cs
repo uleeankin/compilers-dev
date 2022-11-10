@@ -28,4 +28,16 @@ public class TokensParser
     {
         return tokenWithDescription.Substring(tokenWithDescription.IndexOf('-') + 2);
     }
+
+    public static List<Element> GetAdditionVariablesFromPortableCode(List<PortableCode> portableCodes)
+    {
+        List<Element> result = new List<Element>();
+
+        foreach (PortableCode portableCode in portableCodes)
+        {
+            result.Add(portableCode.Result);
+        }
+
+        return result;
+    }
 }
