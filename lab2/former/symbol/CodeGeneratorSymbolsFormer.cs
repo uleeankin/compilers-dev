@@ -1,9 +1,11 @@
 ﻿using lab2.utils;
 
-namespace lab2.former.postfix;
+namespace lab2.former.symbol;
 
-public class PostfixGeneratorSymbolsFormer
+public class CodeGeneratorSymbolsFormer
 {
+    
+    
     public List<string> Form(List<Element> elements)
     {
         List<string> variables = new List<string>();
@@ -36,6 +38,15 @@ public class PostfixGeneratorSymbolsFormer
 
     private string GetVariableNameByDescription(string description)
     {
-        return description.Split(" ")[3];
+        string[] splitedDescription = description.Split(" ");
+
+        if (splitedDescription.Length != 1)
+        {
+            return description.Split(" ")[3];    
+        }
+        else
+        {
+            return description;
+        }
     }
 }

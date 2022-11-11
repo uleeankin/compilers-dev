@@ -2,19 +2,14 @@
 
 public class OperationSign
 {
-
-    private string _sign;
-    private string _name;
-    private int _operandsNumber;
-    
-    public string Sign { get; }
-    public string Name { get; }
-    public int OperandsNumber { get; }
+    public string Sign { get; set; }
+    public string Name { get; set; }
+    public int OperandsNumber { get; set; }
 
     public OperationSign(string sign, string name, int operandsNumber)
     {
-        _sign = sign;
-        _name = name;
-        _operandsNumber = operandsNumber;
+        Name = name;
+        Sign = sign;
+        OperandsNumber = operandsNumber;
     }
 }

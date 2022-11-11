@@ -14,14 +14,14 @@ public class SemanticModifier
                 {
                     if (tokens[i].Token == "<+>" || tokens[i].Token == "<->")
                     {
-                        if (tokens[i + 1].Type == ElementType.INTEGER)
+                        /*if (tokens[i + 1].Type == ElementType.INTEGER)
                         {
                             tokens[i + 1].Type = ElementType.FLOAT;
                         }
                         if (tokens[i + 1].Type == ElementType.INTEGER_VARIABLE)
                         {
                             tokens[i + 1].Type = ElementType.FLOAT_VARIABLE;
-                        }
+                        }*/
                         tokens.Insert(i + 1, new Element("<i2f>", "IntToFloat", i, ElementType.INT_TO_FLOAT));
                     }
                     i++;
@@ -33,14 +33,14 @@ public class SemanticModifier
                     {
                         if (tokens[i].Token == "<+>" || tokens[i].Token == "<->")
                         {
-                            if (tokens[i - 1].Type == ElementType.INTEGER)
+                            /*if (tokens[i - 1].Type == ElementType.INTEGER)
                             {
                                 tokens[i - 1].Type = ElementType.FLOAT;
                             }
                             if (tokens[i - 1].Type == ElementType.INTEGER_VARIABLE)
                             {
                                 tokens[i - 1].Type = ElementType.FLOAT_VARIABLE;
-                            }
+                            }*/
                             tokens.Insert(i - 1, new Element("<i2f>", "IntToFloat", i, ElementType.INT_TO_FLOAT));
                         }
                     }

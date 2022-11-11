@@ -4,7 +4,7 @@ namespace lab2.analyzer.syntax;
 
 public class VariableSyntaxAnalyzer : ISyntaxAnalyzer
 {
-    public void Analyze(List<Element> elements, string element, int index)
+    public void Analyze(List<Element?> elements, string element, int index)
     {
         if (!this.GetAdjacentElement(elements, index))
         {
@@ -13,7 +13,7 @@ public class VariableSyntaxAnalyzer : ISyntaxAnalyzer
         }
     }
     
-    private bool GetAdjacentElement(List<Element> elements, int index)
+    private bool GetAdjacentElement(List<Element?> elements, int index)
     {
         string nextElement;
         string previousElement;

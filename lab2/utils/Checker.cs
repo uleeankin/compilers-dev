@@ -23,7 +23,7 @@ namespace lab2.utils
                     CheckArgumentsInSynOrSemOrGenMode(args);
                     break;
                 case "GEN1":
-                    CheckArgumentsInSynOrSemOrGenMode(args);
+                    CheckArgumentsInLexMode(args);
                     break;
                 case "GEN2":
                     CheckArgumentsInLexMode(args);

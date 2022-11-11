@@ -31,12 +31,23 @@ public class PortableCodeFormer
         for (int i = 0; i < postfixExpression.Count; i++)
         {
             Element element = postfixExpression[i];
-            if (element.Type == ElementType.OPERATION_SIGN)
+            if (element.Type == ElementType.OPERATION_SIGN
+                || element.Type == ElementType.INT_TO_FLOAT)
             {
-                _portableCode.Add(GetPortableCode(i, postfixExpression));
+                PortableCode currentPortableCode = GetPortableCode(i, postfixExpression);
+                _portableCode.Add(currentPortableCode);
+                int len = GetOperandNumberByOperationToken(element.Token);
+                postfixExpression.Insert(i - len, currentPortableCode.Result);
+                int index = i + 1;
+                for (int j = index; j >= index - len; j--)
+                {
+                    postfixExpression.RemoveAt(j);
+                }
+
+                i -= len;
             }
         }
-
+        
         return _portableCode;
     }
 
@@ -44,11 +55,11 @@ public class PortableCodeFormer
                                     List<Element> source)
     {
         int operandsNumber = GetOperandNumberByOperationToken(source[operationPosition].Token);
-        Element operationToken = new Element(GetOperationNameByOperationToken(source[operandsNumber].Token),
+        Element operationToken = new Element(GetOperationNameByOperationToken(source[operationPosition].Token),
             "", -1, ElementType.OPERATION_SIGN);
         List<Element> operands = new List<Element>();
         for (int i = operationPosition - 1; 
-             i <= operationPosition - operandsNumber; i++)
+             i >= operationPosition - operandsNumber; i--)
         {
             operands.Add(source[i]);
         }
@@ -61,10 +72,9 @@ public class PortableCodeFormer
         }
         else
         {
-
             return new PortableCode(operationToken, 
                 GetAdditionalVariable(source, operationPosition), 
-                operands[0]);
+                operands[0]);    
         }
     }
 
@@ -102,8 +112,10 @@ public class PortableCodeFormer
             if (element.Type == ElementType.FLOAT_VARIABLE
                 || element.Type == ElementType.INTEGER_VARIABLE)
             {
-                int current = Int32.Parse(element.Token.Split(", ")[2].Substring(0,
-                    element.Token.Split(", ")[2].Length - 2));
+                int commaPos = element.Token.IndexOf(",", StringComparison.Ordinal);
+                int bracketPos = element.Token.IndexOf(">", StringComparison.Ordinal);
+                int current = Int32.Parse(element.Token.Substring(
+                    commaPos + 1, bracketPos - commaPos - 1));
                 max = current >= max ? current : max;
             }
         }
@@ -113,19 +125,18 @@ public class PortableCodeFormer
     private Element GetAdditionalVariable(List<Element> source, int operationIndex)
     {
         _lastVariableIndex++;
-        string token = "<id, " + _lastVariableIndex + ">";
-        _additionalVariableIndex++;
+        string token = "<id," + _lastVariableIndex + ">";
         string definition = "T" + _additionalVariableIndex;
+        _additionalVariableIndex++;
         ElementType type = ElementType.VARIABLE;
         if (source[operationIndex - 1].Type == ElementType.FLOAT
             || source[operationIndex - 1].Type == ElementType.FLOAT_VARIABLE
-            || source[operationIndex - 1].Type == ElementType.INT_TO_FLOAT)
+            || source[operationIndex].Type == ElementType.INT_TO_FLOAT)
         {
             type = ElementType.FLOAT_VARIABLE;
         }
-        
-        if (source[operationIndex - 1].Type == ElementType.INTEGER
-            || source[operationIndex - 1].Type == ElementType.INTEGER_VARIABLE)
+        else if (source[operationIndex - 1].Type == ElementType.INTEGER
+                 || source[operationIndex - 1].Type == ElementType.INTEGER_VARIABLE)
         {
             type = ElementType.INTEGER_VARIABLE;
         }

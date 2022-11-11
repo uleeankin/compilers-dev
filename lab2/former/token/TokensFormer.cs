@@ -29,7 +29,7 @@ namespace lab2.utils
 
         public List<Element> Form(string[] elements)
         {
-            List<Element> result = new List<Element>();
+            List<Element> result = new List<Element?>();
             string el;
 
             foreach (string element in elements)

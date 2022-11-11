@@ -1,6 +1,6 @@
 ﻿using lab2.utils;
 
-namespace lab2.former.postfix;
+namespace lab2.former.symbol;
 
 public class PostfixExpressionFormer
 {
@@ -10,6 +10,7 @@ public class PostfixExpressionFormer
         Stack<Element> postfix = new Stack<Element>();
         Dictionary<string, int> operatorsWithPriority 
                                     = GetOperatorPriorities();
+        tokens = DeleteBrackets(tokens);
         
         foreach (Element token in tokens)
         {
@@ -33,7 +34,10 @@ public class PostfixExpressionFormer
                                GetElementFromToken(token.Token)) != BracketType.OPENED)
                     {
                         postfixList.Add(topToken);
-                        topToken = postfix.Pop();
+                        if (postfix.Count != 0)
+                        {
+                            topToken = postfix.Pop();   
+                        }
                     }
                 }
             }
@@ -77,11 +81,33 @@ public class PostfixExpressionFormer
         return token.Substring(1, token.Length - 2);
     }
 
-    private bool CompareOperationSignsPriorities(Element firstToken,
-                                                Element secondToken,
+    private bool CompareOperationSignsPriorities(Element? firstToken,
+                                                Element? secondToken,
                                                 Dictionary<string, int> priorities)
     {
         return priorities[GetElementFromToken(firstToken.Token)]
                >= priorities[GetElementFromToken(secondToken.Token)];
+    }
+
+    private List<Element> DeleteBrackets(List<Element> source)
+    {
+        int bracketsNumber = 0;
+        foreach (Element element in source)
+        {
+            if (element.Type == ElementType.BRACKET)
+            {
+                bracketsNumber++;
+            }
+        }
+
+        if (bracketsNumber == 2
+            && source[0].Type == ElementType.BRACKET
+            && source[^1].Type == ElementType.BRACKET)
+        {
+            source.RemoveAt(source.Count - 1);
+            source.RemoveAt(0);
+        }
+
+        return source;
     }
 }

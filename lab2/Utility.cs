@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using lab2.analyzer.semantic;
 using lab2.analyzer.syntax;
 using lab2.former.portable;
-using lab2.former.postfix;
+using lab2.former.symbol;
 using lab2.symbol;
 using lab2.syntax_tree;
 using lab2.utils;
@@ -120,11 +120,21 @@ namespace lab2
             new SyntaxTreeFormer().Form(_parsedExpression);
             new SemanticAnalyzer().Analyze(_parsedExpression);
             new SemanticModifier().ModifyExpression(_parsedExpression);
+            
             List<Element> postfixExpression = new PostfixExpressionFormer()
                 .ConvertInfixToPostfix(this._parsedExpression);
-            TokensParser.GetAdditionVariablesFromPortableCode(
-                new PortableCodeFormer().Form(postfixExpression));
-//TODO: собрать portableCode в строки и вывести в файл; соединить обычные переменные и дополнительные в один список и вывести в файл
+            List<PortableCode> portableCode = 
+                new PortableCodeFormer().Form(postfixExpression);
+            List<Element> portableAdditionVars = 
+                TokensParser.GetAdditionVariablesFromPortableCode(portableCode);
+            
+            FileAccessorUtil.WriteDataToFile(
+                new CodeGeneratorSymbolsFormer()
+                    .Form(_parsedExpression.Concat(portableAdditionVars).ToList()), 
+                _outputSymbolsFileName);
+            
+            FileAccessorUtil.WriteDataToFile(
+                PortableCodeToStringConverter.Convert(portableCode), _outputTokensFileName);
         }
 
         private void DoSecondGenerationMode()
@@ -137,7 +147,7 @@ namespace lab2
             new SemanticAnalyzer().Analyze(_parsedExpression);
 
             FileAccessorUtil.WriteDataToFile(
-                new PostfixGeneratorSymbolsFormer()
+                new CodeGeneratorSymbolsFormer()
                              .Form(this._parsedExpression), 
                          _outputSymbolsFileName);
             new SemanticModifier().ModifyExpression(_parsedExpression);

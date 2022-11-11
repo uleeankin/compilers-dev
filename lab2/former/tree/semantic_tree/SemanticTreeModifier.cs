@@ -46,7 +46,7 @@ public class SemanticTreeModifier
                                        || tree.RightNode.Value.Type == ElementType.INTEGER_VARIABLE))
         {
             Tree temp = tree.RightNode;
-            Element element = new Element("Int2Float", "", -1, ElementType.INT_TO_FLOAT);
+            Element? element = new Element("Int2Float", "", -1, ElementType.INT_TO_FLOAT);
                 
             Tree modifiedTree = new Tree();
             tree.RightNode = modifiedTree;
@@ -64,7 +64,7 @@ public class SemanticTreeModifier
                                       || tree.LeftNode.Value.Type == ElementType.INTEGER_VARIABLE))
         {
             Tree temp = tree.LeftNode;
-            Element element = new Element("Int2Float", "", -1, ElementType.INT_TO_FLOAT);
+            Element? element = new Element("Int2Float", "", -1, ElementType.INT_TO_FLOAT);
                 
             Tree modifiedTree = new Tree();
             tree.LeftNode = modifiedTree;

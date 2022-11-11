@@ -8,9 +8,9 @@ public class Tree
     private Tree _parentNode;
     private Tree _leftNode;
     private Tree _rightNode;
-    private Element _value;
+    private Element? _value;
 
-    public Element Value
+    public Element? Value
     {
         get => _value;
         set => _value = value;

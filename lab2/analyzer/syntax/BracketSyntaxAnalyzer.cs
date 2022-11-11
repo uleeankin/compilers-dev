@@ -6,7 +6,7 @@ public class BracketSyntaxAnalyzer : ISyntaxAnalyzer
 {
     private Stack<int> _openedBrackets = new Stack<int>();
     private Stack<int> _closedBrackets = new Stack<int>();
-    public void Analyze(List<Element> elements, string element, int index)
+    public void Analyze(List<Element?> elements, string element, int index)
     {
         for (int i = 0; i < elements.Count; i++)
         {
@@ -35,7 +35,7 @@ public class BracketSyntaxAnalyzer : ISyntaxAnalyzer
         
     }
 
-    private void GetSyntaxException(List<Element> elements)
+    private void GetSyntaxException(List<Element?> elements)
     {
         if (this._openedBrackets.Count != 0)
         {
