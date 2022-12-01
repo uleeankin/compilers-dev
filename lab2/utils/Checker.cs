@@ -17,16 +17,30 @@ namespace lab2.utils
                     CheckArgumentsInLexMode(args);
                     break;
                 case "SYN":
-                    CheckArgumentsInSynOrSemOrGenMode(args);
+                    CheckArgumentsInSynOrSemMode(args);
                     break;
                 case "SEM":
-                    CheckArgumentsInSynOrSemOrGenMode(args);
+                    CheckArgumentsInSynOrSemMode(args);
                     break;
                 case "GEN1":
-                    CheckArgumentsInLexMode(args);
+                    if (args[1].ToUpper() == "OPT")
+                    {
+                        CheckArgumentsInOptMode(args);
+                    }
+                    else
+                    {
+                        CheckArgumentsInLexMode(args);    
+                    }
                     break;
                 case "GEN2":
-                    CheckArgumentsInLexMode(args);
+                    if (args[1].ToUpper() == "OPT")
+                    {
+                        CheckArgumentsInOptMode(args);
+                    }
+                    else
+                    {
+                        CheckArgumentsInLexMode(args);    
+                    }
                     break;
                 default:
                     throw new ArgumentException("Undefined mode!");
@@ -51,8 +65,28 @@ namespace lab2.utils
                 }
             }    
         }
+        
+        private static void CheckArgumentsInOptMode(string[] args)
+        {
+            if (args.Length != 5)
+            {
+                throw new ArgumentException("You must input 4 arguments:\n" +
+                                            "1) mode\n" +
+                                            "2) optimisation mode\n" +
+                                            "3) file with source expression;\n" +
+                                            "4) file name for tokens;\n" +
+                                            "5) file name for symbols.");
+            }
+            for (int i = 2; i < args.Length; i++)
+            {
+                if (!Regex.IsMatch(args[i], @"(.txt)$"))
+                {
+                    throw new ArgumentException("All arguments must be format files .txt!");
+                }
+            }    
+        }
 
-        private static void CheckArgumentsInSynOrSemOrGenMode(string[] args)
+        private static void CheckArgumentsInSynOrSemMode(string[] args)
         {
             if (args.Length != 3)
             {

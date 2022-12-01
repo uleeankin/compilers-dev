@@ -19,6 +19,11 @@ public class TokensParser
         return result;
     }
 
+    public static string GetValue(string token)
+    {
+        return token.Substring(1, token.Length - 2);
+    }
+
     public static string GetToken(string tokenWithDescription)
     {
         return tokenWithDescription.Substring(0, tokenWithDescription.IndexOf('>') + 1);
@@ -38,6 +43,16 @@ public class TokensParser
             result.Add(portableCode.Result);
         }
 
-        return result;
+        List<Element> vars = new List<Element>();
+
+        foreach (Element element in result)
+        {
+            if (!GetTokens(vars).Contains(element.Token))
+            {
+                vars.Add(element);
+            }
+        }
+
+        return vars;
     }
 }

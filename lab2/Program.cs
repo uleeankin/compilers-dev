@@ -23,12 +23,28 @@ namespace lab2
                     new Utility(args[0], args[1], args[2]).Run();
                     break;
                 case "GEN1":
-                    new Utility(args[0], args[1], 
-                        args[2], args[3]).Run();
+                    if (args[1].ToUpper() == "OPT")
+                    {
+                        new Utility(args[0], args[1], 
+                            args[2], args[3], args[4]).Run();
+                    }
+                    else
+                    {
+                        new Utility(args[0], args[1], 
+                            args[2], args[3]).Run();    
+                    }
                     break;
                 case "GEN2":
-                    new Utility(args[0], args[1], 
-                        args[2], args[3]).Run();
+                    if (args[1].ToUpper() == "OPT")
+                    {
+                        new Utility(args[0], args[1], 
+                            args[2], args[3], args[4]).Run();
+                    }
+                    else
+                    {
+                        new Utility(args[0], args[1], 
+                            args[2], args[3]).Run();    
+                    }
                     break;
             }
         }

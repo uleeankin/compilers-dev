@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
-using lab2.analyzer.semantic;
+﻿using lab2.analyzer.semantic;
 using lab2.analyzer.syntax;
 using lab2.former.portable;
 using lab2.former.symbol;
+using lab2.optimisation;
 using lab2.symbol;
 using lab2.syntax_tree;
 using lab2.utils;
@@ -23,6 +18,7 @@ namespace lab2
         private readonly string _outputTreeFileName;
         private List<Element> _parsedExpression;
         private readonly Mode _operatingMode;
+        private readonly Mode _optimisationMode = Mode.NOTHING;
 
         public Utility(string operatingMode,
                         string inputFileName,
@@ -33,6 +29,19 @@ namespace lab2
             this._outputTokensFileName = outputTokensFileName;
             this._outputSymbolsFileName = outputSymbolsFileName;
             this._operatingMode = this.ConvertStringToMode(operatingMode);
+        }
+        
+        public Utility(string operatingMode,
+            string optimizationMode,
+            string inputFileName,
+            string outputTokensFileName,
+            string outputSymbolsFileName)
+        {
+            this._inputFileName = inputFileName;
+            this._outputTokensFileName = outputTokensFileName;
+            this._outputSymbolsFileName = outputSymbolsFileName;
+            this._operatingMode = this.ConvertStringToMode(operatingMode);
+            this._optimisationMode = this.ConvertStringToMode(operatingMode);
         }
         
         public Utility(string operatingMode,
@@ -58,10 +67,24 @@ namespace lab2
                     this.DoSemanticMode();
                     break;
                 case Mode.GEN1:
-                    this.DoFirstGenerationMode();
+                    if (_optimisationMode == Mode.NOTHING)
+                    {
+                        this.DoFirstGenerationMode();    
+                    }
+                    else
+                    {
+                        this.DoFirstGenerationModeWithOptimization();    
+                    }
                     break;
                 case Mode.GEN2:
-                    this.DoSecondGenerationMode();
+                    if (_optimisationMode == Mode.NOTHING)
+                    {
+                        this.DoSecondGenerationMode();    
+                    }
+                    else
+                    {
+                        this.DoSecondGenerationModeWithOptimization();
+                    }
                     break;
                 default:
                     throw new ArgumentException("Error mode!");
@@ -161,6 +184,60 @@ namespace lab2
                 tokens, _outputTokensFileName);
         }
 
+        private void DoFirstGenerationModeWithOptimization()
+        {
+            _parsedExpression = new TokensFormer().Form(new ArithmeticExpressionParser().Parse(
+                FileAccessorUtil
+                    .ReadInputDataFromFile(_inputFileName)[0]));
+
+            new SyntaxTreeFormer().Form(_parsedExpression);
+            new SemanticAnalyzer().Analyze(_parsedExpression);
+            new SemanticModifier().ModifyExpression(_parsedExpression);
+            
+            List<Element> postfixExpression = new PostfixExpressionFormer()
+                .ConvertInfixToPostfix(new ArithmeticExpressionOptimiser().Optimize( this._parsedExpression));
+            List<PortableCode> portableCode = 
+                new PortableCodeOptimizer().Optimize(new PortableCodeFormer().Form(postfixExpression));
+            List<Element> portableAdditionVars = 
+                TokensParser.GetAdditionVariablesFromPortableCode(portableCode);
+            
+            FileAccessorUtil.WriteDataToFile(
+                new CodeGeneratorSymbolsFormer()
+                    .Form(_parsedExpression.Concat(portableAdditionVars).ToList()), 
+                _outputSymbolsFileName);
+            
+            FileAccessorUtil.WriteDataToFile(
+                PortableCodeToStringConverter.Convert(portableCode), _outputTokensFileName);
+        }
+        
+        private void DoSecondGenerationModeWithOptimization()
+        {
+            _parsedExpression = new TokensFormer().Form(new ArithmeticExpressionParser().Parse(
+                FileAccessorUtil
+                    .ReadInputDataFromFile(_inputFileName)[0]));
+            
+            new SyntaxAnalyzer().Analyze(_parsedExpression);
+            new SemanticAnalyzer().Analyze(_parsedExpression);
+
+            new SemanticModifier().ModifyExpression(_parsedExpression);
+
+            List<Element> modifiedExpression = new PostfixExpressionFormer().ConvertInfixToPostfix(
+                new ArithmeticExpressionOptimiser().Optimize(this._parsedExpression));
+            
+            List<string> tokens = new List<string>
+            {
+                string.Join(" ", TokensListGetter.GetTokens(modifiedExpression))
+            };
+
+            FileAccessorUtil.WriteDataToFile(
+                new CodeGeneratorSymbolsFormer()
+                    .Form(modifiedExpression), 
+                _outputSymbolsFileName);
+            
+            FileAccessorUtil.WriteDataToFile(
+                tokens, _outputTokensFileName);
+        }
+        
         private Mode ConvertStringToMode(string mode)
         {
             switch (mode.ToUpper())
@@ -175,6 +252,8 @@ namespace lab2
                     return Mode.GEN1;
                 case "GEN2":
                     return Mode.GEN2;
+                case "OPT":
+                    return Mode.OPT;
                 default:
                     throw new ArgumentException("Error mode!");
             }
