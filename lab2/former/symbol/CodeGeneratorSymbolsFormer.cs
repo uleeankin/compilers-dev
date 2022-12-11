@@ -4,7 +4,21 @@ namespace lab2.former.symbol;
 
 public class CodeGeneratorSymbolsFormer
 {
-    
+
+    public List<Element> FormVarsElements(List<Element> elements)
+    {
+        List<Element> variables = new List<Element>();
+        foreach (Element element in elements)
+        {
+            if (element.Type == ElementType.FLOAT_VARIABLE
+                || element.Type == ElementType.INTEGER_VARIABLE)
+            {
+                variables.Add(element);
+            }
+        }
+
+        return variables;
+    }
     
     public List<string> Form(List<Element> elements)
     {

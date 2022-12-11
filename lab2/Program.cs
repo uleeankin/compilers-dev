@@ -46,6 +46,10 @@ namespace lab2
                             args[2], args[3]).Run();    
                     }
                     break;
+                case "GEN3":
+                    new Utility(args[0], args[1], 
+                        args[2], args[3]).Run(); 
+                    break;
             }
         }
     }

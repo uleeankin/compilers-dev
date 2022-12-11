@@ -86,6 +86,9 @@ namespace lab2
                         this.DoSecondGenerationModeWithOptimization();
                     }
                     break;
+                case Mode.GEN3:
+                        this.DoThirdGenerationMode();
+                    break;
                 default:
                     throw new ArgumentException("Error mode!");
             }
@@ -237,6 +240,26 @@ namespace lab2
             FileAccessorUtil.WriteDataToFile(
                 tokens, _outputTokensFileName);
         }
+
+        private void DoThirdGenerationMode()
+        {
+            _parsedExpression = new TokensFormer().Form(new ArithmeticExpressionParser().Parse(
+                FileAccessorUtil
+                    .ReadInputDataFromFile(_inputFileName)[0]));
+
+            new SyntaxTreeFormer().Form(_parsedExpression);
+            new SemanticAnalyzer().Analyze(_parsedExpression);
+            new SemanticModifier().ModifyExpression(_parsedExpression);
+            
+            List<Element> postfixExpression = new PostfixExpressionFormer()
+                .ConvertInfixToPostfix(this._parsedExpression);
+            List<PortableCode> portableCode = 
+                new PortableCodeFormer().Form(postfixExpression);
+            
+            FileAccessorUtil.WritePortableCodeToBinaryFile(portableCode, 
+                new CodeGeneratorSymbolsFormer()
+                                .FormVarsElements(_parsedExpression));
+        }
         
         private Mode ConvertStringToMode(string mode)
         {
@@ -254,6 +277,8 @@ namespace lab2
                     return Mode.GEN2;
                 case "OPT":
                     return Mode.OPT;
+                case "GEN3":
+                    return Mode.GEN3;
                 default:
                     throw new ArgumentException("Error mode!");
             }

@@ -1,6 +1,7 @@
 ﻿
 namespace lab2.utils
 {
+    [Serializable]
     public class Element
     {
         private string token;

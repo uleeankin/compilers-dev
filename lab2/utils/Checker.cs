@@ -42,6 +42,9 @@ namespace lab2.utils
                         CheckArgumentsInLexMode(args);    
                     }
                     break;
+                case "GEN3":
+                    CheckArgumentsInLexMode(args);
+                    break;
                 default:
                     throw new ArgumentException("Undefined mode!");
             }

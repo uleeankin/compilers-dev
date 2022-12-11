@@ -1,5 +1,6 @@
 ﻿namespace lab2.utils;
 
+[Serializable]
 public class PortableCode
 {
     public Element Operation { get; }
