@@ -4,14 +4,15 @@ namespace interpreter
 {
     public class Variables
     {
-        private Element variable;
+        public string VariableName { get; set; }
         
-        public double Value { get; set; }
-        public Element Variable { get; }
+        public Double Value { get; set; }
+        public Element Variable { get; set; }
 
         public Variables(Element variable)
         {
-            this.variable = variable;
+            Variable = variable;
+            VariableName = variable.Definition.Split(" ")[3];
         }
 
     }

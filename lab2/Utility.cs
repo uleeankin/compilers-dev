@@ -252,7 +252,9 @@ namespace lab2
             new SemanticModifier().ModifyExpression(_parsedExpression);
             
             List<Element> postfixExpression = new PostfixExpressionFormer()
-                .ConvertInfixToPostfix(this._parsedExpression);
+                .ConvertInfixToPostfix(
+                    new ArithmeticExpressionOptimiser()
+                                .Optimize( this._parsedExpression));
             List<PortableCode> portableCode = 
                 new PortableCodeFormer().Form(postfixExpression);
             
